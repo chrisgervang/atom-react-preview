@@ -1,9 +1,12 @@
 // Dev-server that is accepts component to wrap as the third argument.
 // Starts a webpack dev server on port 3000
+
 var component_to_render = process.argv[2]
+console.log("Hello!", component_to_render)
 if (component_to_render === undefined) {
   throw new Error('You need to specify which component to render!')
 }
+console.log("Hello!")
 var WebpackDevServer = require('webpack-dev-server')
 var compiler = require('./lib/compiler.js')(component_to_render)
 

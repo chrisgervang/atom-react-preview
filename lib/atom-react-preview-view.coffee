@@ -46,7 +46,9 @@ class AtomReactPreviewView extends ScrollView
 
   destroy: ->
     @editorSub.dispose()
-    @webpackProcess.kill 'SIGQUIT'
+    # var spawn = require('child_process').spawn;    
+    spawn("taskkill", ["/pid", @webpackProcess.pid, '/f', '/t']);
+    # @webpackProcess.kill 'SIGQUIT'
     did_bootstrap = false
 
   resolveEditor: (editorId) ->
@@ -91,13 +93,14 @@ class AtomReactPreviewView extends ScrollView
 
   renderHTMLCode: () ->
     path = @editor.getPath()
-    @webpackProcess = spawn('node', ['dev-server.js', path])
+    @webpackProcess = spawn('node', ['C:/Users/chrisg/code/atom-react-preview/dev-server.js', path], {shell: true})
+    console.log(path, @webpackProcess, __dirname)
     @webpackProcess.on('close', (code) =>
       console.log('webpack child process exited with code ' + code)
     )
     @webpackProcess.stdout.on('data', (data) =>
-      # console.log(data.toString())
-      if data.toString().indexOf('bundle is now VALID.') != -1
+      console.log(data.toString())
+      if data.toString().indexOf('bundle is now VALID.') != -1 || data.toString().indexOf('webpack: Failed to compile.') != 1
         if did_bootstrap is false
           did_bootstrap = true
           iframe = document.createElement("iframe")
